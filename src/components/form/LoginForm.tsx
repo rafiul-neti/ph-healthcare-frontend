@@ -2,14 +2,29 @@
 
 import { useForm } from "@tanstack/react-form";
 import { Eye, EyeClosed } from "lucide-react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { LoginZodSchema } from "@/validation";
+import { useLogin } from "@/hooks";
+import { loginZodSchema } from "@/validation";
+import GoogleLoginComponent from "../modules/google-login/GoogleLogin";
 import { Button } from "../ui/button";
-import { Field, FieldError, FieldGroup, FieldLabel } from "../ui/field";
+import {
+  Field,
+  FieldError,
+  FieldGroup,
+  FieldLabel,
+  FieldSeparator,
+} from "../ui/field";
 import { Input } from "../ui/input";
+import { Spinner } from "../ui/spinner";
+import { toast } from "../ui/toast";
 
 const LoginForm = () => {
   const [showPassword, setShowPassword] = useState(false);
+  const router = useRouter();
+
+  const { mutate: login, isPending: loginPending } = useLogin();
 
   const form = useForm({
     defaultValues: {
@@ -17,12 +32,35 @@ const LoginForm = () => {
       password: "",
     },
     validators: {
-      onSubmit: LoginZodSchema,
+      onSubmit: loginZodSchema,
     },
     onSubmit: ({ value }) => {
-      console.log(value);
+      const loginData = {
+        email: value.email,
+        password: value.password,
+      };
+
+      login(loginData, {
+        onSuccess: (res) => {
+          console.log(res);
+          toast.add({
+            title: "Login Success",
+            description: "Welcome Back",
+            type: "success",
+          });
+          router.push("/");
+        },
+        onError: (err) => {
+          toast.add({
+            title: "Authorization Failure",
+            description: err.message ?? "Something went wrong!",
+            type: "error",
+          });
+        },
+      });
     },
   });
+
   return (
     <div className="flex flex-col gap-5">
       <div className="flex flex-col items-center gap-2 text-center">
@@ -109,9 +147,31 @@ const LoginForm = () => {
             }}
           </form.Field>
 
-          <Button type="submit">Submit</Button>
+          <Button disabled={loginPending} type="submit">
+            {loginPending ? (
+              <>
+                <Spinner /> Submitting
+              </>
+            ) : (
+              "Submit"
+            )}
+          </Button>
         </FieldGroup>
       </form>
+
+      <FieldSeparator>Or</FieldSeparator>
+
+      <GoogleLoginComponent />
+
+      <div className="text-center text-sm text-muted-foreground">
+        Don't have an account?{" "}
+        <Link
+          href={"/register"}
+          className="font-medium underline underline-offset-4 hover:text-primary"
+        >
+          Register
+        </Link>
+      </div>
     </div>
   );
 };
