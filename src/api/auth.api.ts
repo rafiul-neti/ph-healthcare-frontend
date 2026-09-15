@@ -1,12 +1,23 @@
 import apiClient from "@/lib/apiClient";
-import type { RegistrationPayload } from "@/types";
+import type {
+  LoginPayload,
+  RegistrationPayload,
+  VerifyAccountPayload,
+} from "@/types";
 
-export function userLogin(payload: { email: string; password: string }) {
+export function userLogin(payload: LoginPayload) {
   return apiClient("/auth/login", { method: "POST", body: payload });
 }
 
 export function userRegistration(payload: RegistrationPayload) {
   return apiClient("/auth/register", { method: "POST", body: payload });
+}
+
+export function verifyAccount(payload: VerifyAccountPayload) {
+  return apiClient(
+    `/${payload.isDoctor ? "auth" : "doctor/apply-as-doctor"}/verify-email`,
+    { method: "POST", body: payload },
+  );
 }
 
 export function getMe() {

@@ -57,6 +57,8 @@ export default function RegisterForm() {
               description: res.message ?? "Something went wrong!",
               type: "error",
             });
+
+            return;
           }
 
           toast.add({
@@ -66,7 +68,7 @@ export default function RegisterForm() {
           });
 
           const params = new URLSearchParams({ email: registrationData.email });
-          router.push(`/register/verify-account?${params.toString()}`);
+          router.push(`/account-verify?${params.toString()}`);
         },
         onError: (err) => {
           toast.add({
