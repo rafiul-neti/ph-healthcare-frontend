@@ -4,8 +4,8 @@ import { useRouter } from "next/navigation";
 import { type ReactNode, useEffect } from "react";
 import { useGetMe } from "@/hooks";
 import type { UserRole } from "@/types";
-import AuthLoading from "./auth-loading";
 import AccessDenied from "./access-denied";
+import AuthLoading from "./auth-loading";
 
 interface IProps {
   children: ReactNode;
@@ -43,7 +43,7 @@ const RoleGuard = ({ children, roles }: IProps) => {
     return <>{children}</>;
   }
 
-  return <AccessDenied />
+  return <AccessDenied />;
 };
 
 export default RoleGuard;
