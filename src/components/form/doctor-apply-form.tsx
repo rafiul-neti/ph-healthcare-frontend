@@ -11,7 +11,6 @@ import {
   Mail,
   MapPin,
   Phone,
-  Plus,
   Stethoscope,
   User,
   X,
@@ -32,6 +31,7 @@ import { useApplyAsDoctor } from "@/hooks";
 import type { DoctorApplicationData } from "@/types/doctor.type";
 import { formatFileSize } from "@/utils";
 import {
+  doctorApplicationSchema,
   isAcceptedFileSize,
   isAcceptedFileType,
   MAX_ADDITIONAL_FILES,
@@ -64,18 +64,22 @@ export default function DoctorApplyForm() {
 
   const form = useForm({
     defaultValues: {
-      name: "Rafiul",
-      email: "drrafiul@gmail.com",
-      phone: "01987456321",
-      address: "Urenus",
-      specialization: "Neurologist",
-      licenseNumber: "DEF456",
-      qualifications: "MBBS",
-      experienceYears: "20",
-      consultationFee: "15200",
-      bio: "My life, Hospital's Rules",
+      name: "",
+      email: "",
+      contactNumber: "",
+      address: "",
+      specialization: "",
+      licenseNumber: "",
+      qualifications: "",
+      experienceYears: "",
+      consultationFee: "",
+      bio: "",
       resume: null as File | null,
       additionalFiles: [] as File[],
+    },
+
+    validators: {
+      onSubmit: doctorApplicationSchema,
     },
 
     onSubmit: async ({ value }) => {
@@ -89,7 +93,7 @@ export default function DoctorApplyForm() {
           licenseNumber: value.licenseNumber.trim(),
           qualifications: value.qualifications.trim(),
           experienceYears: Number(value.experienceYears),
-          contactNumber: value.phone.trim(),
+          contactNumber: value.contactNumber.trim(),
           address: value.address.trim(),
           consultationFee: value.consultationFee.trim()
             ? Number(value.consultationFee)
@@ -219,7 +223,7 @@ export default function DoctorApplyForm() {
               }}
             </form.Field>
 
-            <form.Field name="phone">
+            <form.Field name="contactNumber">
               {(field) => {
                 const isInvalid =
                   field.state.meta.isTouched && !field.state.meta.isValid;
@@ -497,6 +501,7 @@ export default function DoctorApplyForm() {
 
                   <div className="flex flex-wrap items-center gap-3">
                     <Button
+                      // biome-ignore lint/a11y/noLabelWithoutControl: <explanation>
                       render={<label htmlFor="resume-field" />}
                       nativeButton={false}
                       variant={"outline"}
@@ -511,15 +516,6 @@ export default function DoctorApplyForm() {
                       name={field.name}
                       onChange={(e) => {
                         const selected = e.target.files?.[0] ?? null;
-
-                        if (
-                          selected &&
-                          (!isAcceptedFileSize(selected?.size) ||
-                            !isAcceptedFileType(selected.type))
-                        ) {
-                          field.handleBlur();
-                          return;
-                        }
 
                         field.handleChange(selected);
                         e.target.value = "";
@@ -569,10 +565,14 @@ export default function DoctorApplyForm() {
                 <Field data-invalid={isInvalid}>
                   <FieldLabel htmlFor="additional-file-field">
                     Additional Files
+                    <span className="font-normal text-muted-foreground">
+                      (optional)
+                    </span>
                   </FieldLabel>
 
                   <div className="flex flex-wrap items-center gap-3">
                     <Button
+                      // biome-ignore lint/a11y/noLabelWithoutControl: <explanation>
                       render={<label htmlFor="additional-file-field" />}
                       nativeButton={false}
                       variant={"outline"}
@@ -593,19 +593,8 @@ export default function DoctorApplyForm() {
                           return;
                         }
 
-                        const invalid = incoming.some(
-                          (file) =>
-                            !isAcceptedFileSize(file.size) ||
-                            !isAcceptedFileType(file.type),
-                        );
-
-                        if (invalid) {
-                          field.handleBlur();
-                          e.target.value = "";
-                          return;
-                        }
-
                         field.handleChange([...files, ...incoming]);
+                        e.target.value = "";
                       }}
                       disabled={files.length === MAX_ADDITIONAL_FILES}
                     />
