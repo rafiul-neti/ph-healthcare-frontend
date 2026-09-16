@@ -1,11 +1,8 @@
-import React from 'react';
+import type { ReactNode } from "react";
+import RoleGuard from "@/components/auth/role-guard";
 
-const AdminLayout = () => {
-    return (
-        <div>
-            This is Admin layout
-        </div>
-    );
+const AdminLayout = ({ children }: { children: ReactNode }) => {
+  return <RoleGuard roles={["ADMIN", "SUPER_ADMIN"]}>{children}</RoleGuard>;
 };
 
 export default AdminLayout;
