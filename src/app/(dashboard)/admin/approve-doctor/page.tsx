@@ -1,4 +1,4 @@
-import DoctorApprovalTabs from "@/components/modules/doctor-approval/doctor-approval-tebs";
+import DoctorApprovalTabs from "@/components/modules/doctor-approval/doctor-approval-tabs";
 
 const ApproveDoctorPage = () => {
   return (

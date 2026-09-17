@@ -1,5 +1,11 @@
 import apiClient from "@/lib/apiClient";
-import type { DoctorApplicationPayload } from "@/types/doctor.type";
+import type { ApiResponse } from "@/types";
+import type {
+  ApproveDoctorPayload,
+  Doctor,
+  DoctorApplicationPayload,
+  DoctorQueryParams,
+} from "@/types/doctor.type";
 
 export function applyAsDoctor(payload: DoctorApplicationPayload) {
   const formData = new FormData();
@@ -14,5 +20,18 @@ export function applyAsDoctor(payload: DoctorApplicationPayload) {
   return apiClient("/doctor/apply-as-doctor", {
     method: "POST",
     body: formData,
+  });
+}
+
+export function getAllDoctors(query: DoctorQueryParams) {
+  return apiClient<ApiResponse<Doctor[]>>("/doctor/all-doctors", {
+    query,
+  });
+}
+
+export function approveDoctor(payload: ApproveDoctorPayload) {
+  return apiClient("/doctor/approve-doctor", {
+    method: "POST",
+    body: payload,
   });
 }
