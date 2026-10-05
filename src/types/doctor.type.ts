@@ -44,7 +44,7 @@ export interface Doctor {
   resume?: string | null;
   resumePublicId?: string | null;
   additionalFiles?: AdditionalFile[] | null;
-  verificatonStatus: DoctorVerificationStatus;
+  verificationStatus: DoctorVerificationStatus;
   rejectionReason?: string | null;
   reviewedBy?: string | null;
   reviewAt?: string | null;
@@ -57,7 +57,7 @@ export interface Doctor {
 }
 
 export interface DoctorQueryParams {
-  verificatonStatus?: DoctorVerificationStatus;
+  verificationStatus?: DoctorVerificationStatus;
   page?: number;
   limit?: number;
   searchTerm?: string;

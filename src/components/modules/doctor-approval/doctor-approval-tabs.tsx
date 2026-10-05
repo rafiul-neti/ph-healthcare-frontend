@@ -3,7 +3,8 @@
 import { Suspense, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import type { DoctorVerificationStatus } from "@/types";
+import useDebounce from "@/hooks/debounce.hook";
+import type { DoctorQueryParams, DoctorVerificationStatus } from "@/types";
 import DoctorApprovalSheet from "./doctor-approval-sheet";
 import DoctorApprovalTable from "./doctor-approval-table";
 import DoctorApprovalTableLoading from "./doctor-approval-table-loading";
@@ -16,20 +17,29 @@ const verificationStatus: [DoctorVerificationStatus | "ALL", string][] = [
 ];
 
 const DoctorApprovalTabs = () => {
-  const [tab, setTab] = useState("ALL");
+  const [tab, setTab] = useState<DoctorVerificationStatus | "ALL">("ALL");
   const [selectedId, setSelectedId] = useState("");
+  const [searchInput, setSearchInput] = useState("");
+  const [page, setPage] = useState(1);
 
-  const queryParams = {
-    page: 1,
+  const debouncedSearch = useDebounce(searchInput);
+
+  const queryParams: DoctorQueryParams = {
+    page,
     limit: 10,
     ...(tab === "ALL" ? {} : { verificationStatus: tab }),
+    ...(debouncedSearch ? { searchTerm: debouncedSearch } : {}),
   };
 
   return (
     <>
       <div className="flex items-center justify-between my-5">
         <div className="">
-          <Input type="search" placeholder="Search by name or email" />
+          <Input
+            onChange={(e) => setSearchInput(e.target.value)}
+            type="search"
+            placeholder="Search by name or email"
+          />
         </div>
 
         <Tabs value={tab} onValueChange={(value) => setTab(value)}>
@@ -44,7 +54,11 @@ const DoctorApprovalTabs = () => {
       </div>
 
       <Suspense fallback={<DoctorApprovalTableLoading />}>
-        <DoctorApprovalTable {...queryParams} handleReview={setSelectedId} />
+        <DoctorApprovalTable
+          {...queryParams}
+          handleReview={setSelectedId}
+          handlePageChange={setPage}
+        />
       </Suspense>
 
       <DoctorApprovalSheet
