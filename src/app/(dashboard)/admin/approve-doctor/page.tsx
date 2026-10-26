@@ -4,7 +4,7 @@ const ApproveDoctorPage = () => {
   return (
     <section className="p-5">
       <div className="">
-        <h1>Doctor Approval</h1>
+        <h1 className="text-2xl">Doctor Approval</h1>
         <p>Please review and make sure the given information is real.</p>
       </div>
 
