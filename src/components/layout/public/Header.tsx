@@ -11,6 +11,7 @@ import type { UserRole } from "@/types";
 const Header = () => {
   const routes = [
     { name: "Home", url: "/" },
+    { name: "Doctors", url: "/doctors" },
     { name: "About Us", url: "/about-us" },
   ];
 

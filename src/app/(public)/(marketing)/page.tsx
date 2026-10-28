@@ -1,7 +1,7 @@
-import React from "react";
+
 
 const HomePage = () => {
-  return <div>This is the Home Page</div>;
+  return <div className="max-w-7xl mx-auto">This is the Home Page</div>;
 };
 
 export default HomePage;

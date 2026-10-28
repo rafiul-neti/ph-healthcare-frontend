@@ -9,8 +9,8 @@ export const patientRoutes = [
         url: `${prefix}`,
       },
       {
-        title: "My Bookings",
-        url: `${prefix}/bookings`,
+        title: "My Appointments",
+        url: `${prefix}/my-appointments`,
       },
     ],
   },

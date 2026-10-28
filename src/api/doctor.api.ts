@@ -1,11 +1,14 @@
 import apiClient from "@/lib/apiClient";
-import type { ApiResponse } from "@/types";
 import type {
+  ApiResponse,
   ApproveDoctorPayload,
   Doctor,
   DoctorApplicationPayload,
   DoctorQueryParams,
-} from "@/types/doctor.type";
+  PublicDoctorParams,
+  PublicDoctorProfile,
+  Schedule,
+} from "@/types";
 
 export function applyAsDoctor(payload: DoctorApplicationPayload) {
   const formData = new FormData();
@@ -33,5 +36,30 @@ export function approveDoctor(payload: ApproveDoctorPayload) {
   return apiClient("/doctor/approve-doctor", {
     method: "POST",
     body: payload,
+  });
+}
+
+export function getAllPublicDoctors(query: PublicDoctorParams) {
+  return apiClient<ApiResponse<PublicDoctorProfile[]>>(
+    "/doctor/public/all-doctors",
+    { query },
+  );
+}
+
+export function getPublicDoctorProfile(doctorId: string) {
+  return apiClient<ApiResponse<PublicDoctorProfile>>(
+    `/doctor/public/${doctorId}`,
+  );
+}
+
+export function getTodaysScheduleByDoctor(query: {
+  doctorId?: string;
+  page?: number;
+  limit?: number;
+}) {
+  return apiClient<
+    ApiResponse<(Schedule & { isDeleted: boolean; deletedAt: Date | null })[]>
+  >("/schedule/todays-schedule", {
+    query,
   });
 }
